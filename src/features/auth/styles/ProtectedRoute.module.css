@@ -1,0 +1,26 @@
+.loadingPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.loadingCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.spinner {
+  animation: spin 900ms linear infinite;
+  color: #111827;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
