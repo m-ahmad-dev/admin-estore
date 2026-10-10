@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 import { refreshAccessToken } from "../../../lib/axios";
 import {
   setAuthInitializing,
   setCredentials,
   setUnauthenticated,
 } from "../authSlice";
-import { clearAccessToken } from "../services/tokenManager";
+import { clearAccessToken, onSessionExpired } from "../services/tokenManager";
 import {
   clearStoredAdmin,
   getStoredAdmin,
@@ -15,6 +16,18 @@ import {
 
 export const useAuthBootstrap = () => {
   const dispatch = useDispatch();
+
+  // If a request fails and the refresh token is rejected, drop the session so
+  // ProtectedRoute sends the admin to /login instead of leaving a broken UI
+  // where every route returns 401.
+  useEffect(() => {
+    return onSessionExpired(() => {
+      clearAccessToken();
+      clearStoredAdmin();
+      dispatch(setUnauthenticated());
+      toast.error("Your session has expired. Please sign in again.");
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     let cancelled = false;
